@@ -6,7 +6,9 @@ from app import models
 
 app = FastAPI()
 
+models.Base.metadata.drop_all(bind=engine)
 models.Base.metadata.create_all(bind=engine)
+
 
 app.include_router(setups.router, prefix="/setups", tags=["Setups"])
 app.include_router(journal.router, prefix="/journal", tags=["Journal"])
