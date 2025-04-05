@@ -1,6 +1,8 @@
 # app/routers/alerts.py
 from fastapi import APIRouter
 from pydantic import BaseModel
+from app.utils.discord_bot import send_signal_to_discord
+
 
 router = APIRouter()
 
@@ -18,4 +20,9 @@ class SetupCreate(BaseModel):
 @router.post("/tv")
 async def receive_tv_alert(setup: SetupCreate):
     print(setup.dict())
+    return {"status": "received", "setup": setup}
+
+@router.post("/tv")
+async def receive_tv_alert(setup: SetupCreate):
+    send_signal_to_discord(setup.dict())
     return {"status": "received", "setup": setup}

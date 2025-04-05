@@ -1,26 +1,27 @@
 import requests
-from app.schemas import SetupCreate
+import os
 
-DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1358046429616148480/c4RFindu8sWCSfqcLBeH4Zw-8iHCCHe7yrN7ci_OV1EhFD82RVPAC-B6eBZPozi3YtjF"
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
-def send_signal_to_discord(setup_data: SetupCreate):
-    message = {
-        "content": (
-            f"📈 **New Setup Logged**\n\n"
-            f"**Symbol**: {setup_data.symbol}\n"
-            f"**Context**: {setup_data.context}\n"
-            f"**Entry**: {setup_data.entry_price}\n"
-            f"**SL**: {setup_data.stop_loss}\n"
-            f"**TP**: {setup_data.take_profit}\n"
-            f"**RR**: {setup_data.risk_reward}\n"
-            f"**Bias**: {getattr(setup_data, 'bias', 'N/A')}\n"
-            f"**Probability**: {getattr(setup_data, 'probability_score', 'N/A')}\n"
-            f"**Comment**: {getattr(setup_data, 'confidence_comment', 'N/A')}"
-        )
-    }
+def send_signal_to_discord(setup_data: dict):
+    if not DISCORD_WEBHOOK_URL:
+        print("❌ Webhook Discord manquant")
+        return
+
+    message = (
+        f"📡 **Nouvelle alerte TradingView reçue**\n"
+        f"**Symbol**: {setup_data.get('symbol')}\n"
+        f"**Contexte**: {setup_data.get('context')}\n"
+        f"**Prix entrée**: {setup_data.get('entry_price')}\n"
+        f"**SL / TP**: {setup_data.get('stop_loss')} → {setup_data.get('take_profit')}\n"
+        f"**RR**: {setup_data.get('risk_reward')} | 🎯 Probabilité: {setup_data.get('probability_score')}\n"
+        f"**Bias**: {setup_data.get('bias')}\n"
+        f"🧠 {setup_data.get('confidence_comment')}"
+    )
 
     try:
-        response = requests.post(DISCORD_WEBHOOK_URL, json=message)
+        response = requests.post(DISCORD_WEBHOOK_URL, json={"content": message})
         response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to send message to Discord: {e}")
+        print("✅ Alerte envoyée sur Discord")
+    except Exception as e:
+        print(f"❌ Erreur envoi Discord: {e}")
