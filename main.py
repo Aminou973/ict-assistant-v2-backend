@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import setups, journal, analyzer, stats
+from app.routers import alerts
 
 app = FastAPI(title="ICT Assistant Backend")
 
@@ -8,6 +9,8 @@ app.include_router(setups.router, prefix="/setups", tags=["Setups"])
 app.include_router(journal.router, prefix="/journal", tags=["Journal"])
 app.include_router(analyzer.router, prefix="/analyze", tags=["Analyze"])
 app.include_router(stats.router, prefix="/stats", tags=["Stats"])
+app.include_router(alerts.router, prefix="/alerts", tags=["Alerts"])
+
 
 @app.get("/")
 def root():
