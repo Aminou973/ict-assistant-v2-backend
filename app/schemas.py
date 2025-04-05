@@ -1,20 +1,4 @@
 from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
-
-class UserCreate(BaseModel):
-    username: str
-    email: str
-    password: str
-
-class User(BaseModel):
-    id: int
-    username: str
-    email: str
-    created_at: datetime
-
-    class Config:
-        orm_mode = True
 
 class SetupCreate(BaseModel):
     user_id: int
@@ -25,34 +9,15 @@ class SetupCreate(BaseModel):
     take_profit: float
     risk_reward: float
 
-
 class Setup(BaseModel):
     id: int
     user_id: int
-    date: datetime
-    type: str
+    symbol: str
     context: str
-    probability_score: Optional[int]
-    result: Optional[str]
-    rr: Optional[str]
+    entry_price: float
+    stop_loss: float
+    take_profit: float
+    risk_reward: float
 
     class Config:
-        orm_mode = True
-
-class JournalEntryCreate(BaseModel):
-    user_id: int
-    date: datetime
-    emotions: str
-    plan_vs_reality: str
-    discipline_score: int
-
-class JournalEntry(BaseModel):
-    id: int
-    user_id: int
-    date: datetime
-    emotions: str
-    plan_vs_reality: str
-    discipline_score: int
-
-    class Config:
-        orm_mode = True
+        from_attributes = True  # Pydantic v2
