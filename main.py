@@ -1,25 +1,13 @@
-from fastapi import FastAPI
-from app.routers import users, setups, journal, auth  #
-from app.routers import discord_test
-from app.routers import discord_signals
 
+from fastapi import FastAPI
+from app.routers import setups, journal, analyzer
+from app.database import engine
+from app import models
 
 app = FastAPI()
 
-app.include_router(users.router)
-app.include_router(setups.router)
-app.include_router(journal.router)
-app.include_router(auth.router)
-app.include_router(discord_test.router)
-app.include_router(discord_signals.router)
+models.Base.metadata.create_all(bind=engine)
 
-
-@app.get("/")
-def root():
-    return {"message": "ICT Assistant V2 Backend Ready"}
-
-
-
-
-
-
+app.include_router(setups.router, prefix="/setups", tags=["Setups"])
+app.include_router(journal.router, prefix="/journal", tags=["Journal"])
+app.include_router(analyzer.router, tags=["Assistant IA"])
