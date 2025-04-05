@@ -1,17 +1,21 @@
-from fastapi import APIRouter, Request
-import json
-import logging
+# app/routers/alerts.py
+from fastapi import APIRouter
+from pydantic import BaseModel
 
 router = APIRouter()
 
-@router.post("/alerts/tv")
-async def receive_tv_alert(request: Request):
-    try:
-        data = await request.json()
-        logging.info("✅ Alert received from TradingView: %s", data)
-        ...
-    except Exception as e:
-        body = await request.body()
-        logging.error(f"❌ Failed to parse TV alert: {e} | Raw body: {body}")
-        return {"status": "error", "message": str(e)}
+class SetupCreate(BaseModel):
+    symbol: str
+    context: str
+    entry_price: float
+    stop_loss: float
+    take_profit: float
+    risk_reward: float
+    probability_score: float
+    bias: str
+    confidence_comment: str
 
+@router.post("/tv")
+async def receive_tv_alert(setup: SetupCreate):
+    print(setup.dict())
+    return {"status": "received", "setup": setup}
