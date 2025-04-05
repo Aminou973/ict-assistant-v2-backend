@@ -1,22 +1,14 @@
+
 import requests
 import os
 
-DISCORD_SIGNALS_WEBHOOK = os.getenv("DISCORD_SIGNALS_WEBHOOK")
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL", "https://discordapp.com/api/webhooks/...")
 
-def send_signal_to_discord(message: str, title: str = "🚨 Signal ICT détecté"):
-    if not DISCORD_SIGNALS_WEBHOOK:
-        raise ValueError("DISCORD_SIGNALS_WEBHOOK is not set in .env")
-
-    embed = {
-        "title": title,
-        "description": message,
-        "color": 0xE91E63  # rose flashy
+def send_signal_to_discord(setup):
+    message = {
+        "content": f"📈 Signal détecté : {setup.symbol}\n📌 Contexte : {setup.context}\n🎯 Entry: {setup.entry_price} | TP: {setup.take_profit} | SL: {setup.stop_loss}"
     }
-
-    data = {
-        "embeds": [embed]
-    }
-
-    response = requests.post(DISCORD_SIGNALS_WEBHOOK, json=data)
-    if response.status_code != 204:
-        raise Exception(f"Erreur Discord: {response.status_code} - {response.text}")
+    try:
+        requests.post(DISCORD_WEBHOOK_URL, json=message)
+    except Exception as e:
+        print("Erreur Discord:", e)

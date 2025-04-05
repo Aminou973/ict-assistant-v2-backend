@@ -1,7 +1,7 @@
+
 from pydantic import BaseModel
 
 class SetupCreate(BaseModel):
-    user_id: int
     symbol: str
     context: str
     entry_price: float
@@ -9,15 +9,18 @@ class SetupCreate(BaseModel):
     take_profit: float
     risk_reward: float
 
-class Setup(BaseModel):
+class Setup(SetupCreate):
     id: int
-    user_id: int
-    symbol: str
-    context: str
-    entry_price: float
-    stop_loss: float
-    take_profit: float
-    risk_reward: float
-
     class Config:
-        from_attributes = True  # Pydantic v2
+        from_attributes = True
+
+class JournalEntryBase(BaseModel):
+    date: str
+    trade_summary: str
+    emotions: str
+    discipline_rating: int
+
+class JournalEntry(JournalEntryBase):
+    id: int
+    class Config:
+        from_attributes = True
