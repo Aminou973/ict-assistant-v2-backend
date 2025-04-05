@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from app.routers import users, setups, journal, auth  #
 from app.routers import discord_test
+from app.routers import discord_signals
+
 
 app = FastAPI()
 
@@ -9,6 +11,7 @@ app.include_router(setups.router)
 app.include_router(journal.router)
 app.include_router(auth.router)
 app.include_router(discord_test.router)
+app.include_router(discord_signals.router)
 
 
 @app.get("/")
