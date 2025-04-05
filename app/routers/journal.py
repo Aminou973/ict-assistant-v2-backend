@@ -1,15 +1,15 @@
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from typing import List
+from app import schemas, crud
 from app.database import get_db
-from app import models, schemas
 
 router = APIRouter()
 
 @router.post("/", response_model=schemas.JournalEntry)
-def create_journal_entry(entry: schemas.JournalEntryBase, db: Session = Depends(get_db)):
-    db_entry = models.JournalEntry(**entry.dict())
-    db.add(db_entry)
-    db.commit()
-    db.refresh(db_entry)
-    return db_entry
+def create_journal_entry(entry: schemas.JournalEntryCreate, db: Session = Depends(get_db)):
+    return crud.create_journal_entry(db, entry)
+
+@router.get("/", response_model=List[schemas.JournalEntry])
+def get_all_journal_entries(db: Session = Depends(get_db)):
+    return crud.get_journal_entries(db)

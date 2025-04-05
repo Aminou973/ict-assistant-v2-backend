@@ -1,10 +1,9 @@
-
 from fastapi import APIRouter
-from app.core.assistant import analyse_setup_conditions
+from app.schemas import AnalyzeRequest, AnalyzeResponse
+from app.utils.analyze_local import analyze_setup_local
 
 router = APIRouter()
 
-@router.post("/analyze/")
-def analyze_setup(setup: dict):
-    result = analyse_setup_conditions(setup)
-    return result
+@router.post("/", response_model=AnalyzeResponse)
+def analyze_setup(request: AnalyzeRequest):
+    return analyze_setup_local(request)

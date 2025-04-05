@@ -1,15 +1,23 @@
-
 from fastapi import FastAPI
-from app.routers import setups, journal, analyzer
-from app.database import engine
-from app import models
+from fastapi.middleware.cors import CORSMiddleware
+from app.routers import setups, journal, analyzer, stats
 
-app = FastAPI()
-
-models.Base.metadata.drop_all(bind=engine)
-models.Base.metadata.create_all(bind=engine)
-
+app = FastAPI(title="ICT Assistant Backend")
 
 app.include_router(setups.router, prefix="/setups", tags=["Setups"])
 app.include_router(journal.router, prefix="/journal", tags=["Journal"])
-app.include_router(analyzer.router, tags=["Assistant IA"])
+app.include_router(analyzer.router, prefix="/analyze", tags=["Analyze"])
+app.include_router(stats.router, prefix="/stats", tags=["Stats"])
+
+@app.get("/")
+def root():
+    return {"message": "ICT Assistant V2 Backend Ready"}
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ou ["http://localhost:5173"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
