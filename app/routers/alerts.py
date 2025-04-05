@@ -9,11 +9,9 @@ async def receive_tv_alert(request: Request):
     try:
         data = await request.json()
         logging.info("✅ Alert received from TradingView: %s", data)
-        # Ici tu peux traiter l’alerte, par exemple :
-        symbol = data.get("ticker") or data.get("symbol")
-        message = data.get("message", "No message provided")
-        print(f"[📡 ALERTE] {symbol}: {message}")
-        return {"status": "success", "message": "Alert received"}
+        ...
     except Exception as e:
-        logging.error(f"❌ Failed to parse TV alert: {e}")
+        body = await request.body()
+        logging.error(f"❌ Failed to parse TV alert: {e} | Raw body: {body}")
         return {"status": "error", "message": str(e)}
+
