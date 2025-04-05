@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from app.routers import users, setups, journal
-
+from app.routers import users, setups, journal, auth  #
 app = FastAPI()
 
 app.include_router(users.router)
@@ -12,9 +11,8 @@ app.include_router(auth.router)
 def root():
     return {"message": "ICT Assistant V2 Backend Ready"}
 
-from fastapi import FastAPI
-from app.routers import users, setups, journal, auth  # ← bien ajouter "auth"
 
-app = FastAPI()
+
+
 
 

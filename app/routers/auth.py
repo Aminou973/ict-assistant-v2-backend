@@ -18,11 +18,8 @@ def get_db():
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, form_data.username)
-    if not user:
+    if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid credentials")
 
-    if not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid credentials")
-
-    access_token = create_access_token(data={"user_id": user.id})
-    return {"access_token": access_token, "token_type": "bearer"}
+    token = create_access_token(data={"user_id": user.id})
+    return {"access_token": token, "token_type": "bearer"}
