@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app import schemas, crud
 from app.database import SessionLocal
+from app.utils.discord_bot import send_signal_to_discord  # ajoute en haut
 
 router = APIRouter(prefix="/setups", tags=["Setups"])
 
@@ -21,7 +22,7 @@ def create_setup(setup: schemas.SetupCreate, db: Session = Depends(get_db)):
 @router.get("/user/{user_id}", response_model=list[schemas.Setup])
 def get_user_setups(user_id: int, db: Session = Depends(get_db)):
     return crud.get_setups_by_user(db, user_id)
-from app.utils.discord_bot import send_signal_to_discord  # ajoute en haut
+
 
 @router.post("/", response_model=schemas.Setup)
 def create_setup(setup: schemas.SetupCreate, db: Session = Depends(get_db)):

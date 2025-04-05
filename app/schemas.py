@@ -18,12 +18,13 @@ class User(BaseModel):
 
 class SetupCreate(BaseModel):
     user_id: int
-    date: datetime
-    type: str
+    symbol: str
     context: str
-    probability_score: Optional[int]
-    result: Optional[str]
-    rr: Optional[str]
+    entry_price: float
+    stop_loss: float
+    take_profit: float
+    risk_reward: float
+
 
 class Setup(BaseModel):
     id: int
